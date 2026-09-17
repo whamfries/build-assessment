@@ -5,7 +5,7 @@ import { createEmbedding } from "../lib/retrieval";
 
 async function main(){
   const supabase=getAdminSupabase();
-  const {data,error}=await supabase.from("products").select("id,search_document").is("embedding",null);
+  const {data,error}=await supabase.from("products").select("id,search_document").eq("moderation_status","approved").is("embedding",null);
   if(error)throw error;
   for(const product of data??[]){
     const embedding=await createEmbedding(product.search_document);

@@ -15,7 +15,7 @@ const exactFacet=(query:string, values:(string|null)[]) => values.filter((value)
 // This keeps an LLM (or a semantic synonym such as "evening") from becoming an
 // impossible factual filter, while still enforcing explicit colour/brand/etc.
 async function extractIntent(query:string):Promise<Intent>{
-  const {data,error}=await getServerSupabase().from("products").select("brand,category,condition,colour").eq("is_available",true);
+  const {data,error}=await getServerSupabase().from("products").select("brand,category,condition,colour").eq("is_available",true).eq("moderation_status","approved");
   if(error) throw error;
   const facets=(data??[]) as Facets[];
   const price=priceConstraints(query);
@@ -107,7 +107,7 @@ export type AssistantRetrieval={products:Product[];namedProducts:Product[];compa
 export async function assistantSearch(question:string, count=8):Promise<AssistantRetrieval>{
   // Fetching the available catalogue is deliberately independent of semantic
   // ranking, so an explicitly named listing cannot be displaced by Top-K.
-  const catalogueRequest=getServerSupabase().from("products").select("*").eq("is_available",true);
+  const catalogueRequest=getServerSupabase().from("products").select("*").eq("is_available",true).eq("moderation_status","approved");
   const [semanticResult,catalogueResult]=await Promise.all([semanticSearch(question,count),catalogueRequest]);
   if(catalogueResult.error) throw catalogueResult.error;
   const catalogue=(catalogueResult.data??[]) as Product[];

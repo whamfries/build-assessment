@@ -3,7 +3,7 @@ import type { Product } from "@/lib/types";
 
 export async function getProducts(filters: Record<string, string | undefined> = {}) {
   const supabase = getServerSupabase();
-  let query = supabase.from("products").select("*").eq("is_available", true);
+  let query = supabase.from("products").select("*").eq("is_available", true).eq("moderation_status", "approved");
   if (filters.brand) query = query.eq("brand", filters.brand);
   if (filters.category) query = query.eq("category", filters.category);
   if (filters.condition) query = query.eq("condition", filters.condition);
@@ -19,7 +19,7 @@ export async function getProducts(filters: Record<string, string | undefined> = 
 }
 
 export async function getProduct(slug: string) {
-  const { data, error } = await getServerSupabase().from("products").select("*").eq("slug", slug).eq("is_available", true).single();
+  const { data, error } = await getServerSupabase().from("products").select("*").eq("slug", slug).eq("is_available", true).eq("moderation_status", "approved").single();
   if (error) return null;
   return data as Product;
 }
