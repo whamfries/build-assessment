@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+.env.local
+.env*.local
+!.env.example
+*.tsbuildinfo
+.DS_Store
+
+# Local assessment/reference files
+CognitioLabs-FDE-assessment-brief.pdf
+generated_bags-*.zip
